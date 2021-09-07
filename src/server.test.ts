@@ -4,6 +4,7 @@ import {
   hatchDigipet,
   trainDigipet,
   walkDigipet,
+  ignoreDigipet,
 } from "./digipet/controller";
 import { INITIAL_DIGIPET, setDigipet } from "./digipet/model";
 import app from "./server";
@@ -204,9 +205,6 @@ describe("action routes", () => {
     });
   });
 
-  // GIVEN that the user does not have a digipet, WHEN they send a GET request to the /digipet/ignore endpoint, THEN the server responds with a message informing them that they don't have a digipet and suggesting that they try hatching one
-
-  
 
   describe("GET /digipet/ignore", () => {
     test("if tdoes not have digipet, it responds with a message about hatching one", async () => {
@@ -225,18 +223,19 @@ describe("action routes", () => {
     });
   });
 
+  it("delegates state change to the walkDigipet function", async () => {
+    // setup: reset digipet and mock function
+    setDigipet(INITIAL_DIGIPET);
+    if (jest.isMockFunction(ignoreDigipet) /* type guard */) {
+      ignoreDigipet.mockReset();
+    }
+    // act
+    await supertest(app).get("/digipet/ignore");
+    // assert
+    expect(ignoreDigipet).toHaveBeenCalledTimes(1);
+  });
+
 
 });
 
-  //   it("delegates state change to the walkDigipet function", async () => {
-  //     // setup: reset digipet and mock function
-  //     setDigipet(INITIAL_DIGIPET);
-  //     if (jest.isMockFunction(walkDigipet) /* type guard */) {
-  //       walkDigipet.mockReset();
-  //     }
-  //     // act
-  //     await supertest(app).get("/digipet/walk");
-  //     // assert
-  //     expect(walkDigipet).toHaveBeenCalledTimes(1);
-  //   });
 
