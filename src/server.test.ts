@@ -5,6 +5,7 @@ import {
   trainDigipet,
   walkDigipet,
   ignoreDigipet,
+  rehomeDigipet
 } from "./digipet/controller";
 import { INITIAL_DIGIPET, setDigipet } from "./digipet/model";
 import app from "./server";
@@ -114,6 +115,7 @@ describe("action routes", () => {
       expect(controller).toHaveBeenCalledTimes(0);
     }
   });
+})
 
   describe("GET /digipet/feed", () => {
     test("if the user has a digipet, it calls the feedDigipet controller and responds with a message about feeding the digipet", async () => {
@@ -207,7 +209,7 @@ describe("action routes", () => {
 
 
   describe("GET /digipet/ignore", () => {
-    test("if tdoes not have digipet, it responds with a message about hatching one", async () => {
+    test("if the user has a digipet, it calls the ignoreDigipet controller and responds with a message about ignoring it", async () => {
       // setup: reset digipet
       setDigipet(INITIAL_DIGIPET);
 
@@ -236,6 +238,60 @@ describe("action routes", () => {
   });
 
 
-});
+ 
+
+  describe("GET /digipet/rehome", () => {
+    test("if the user has a digipet, it responds with a message explaining about rehoming it", async () => {
+      // setup
+      if (jest.isMockFunction(rehomeDigipet) /* type guard */) {
+        rehomeDigipet.mockReset();
+      }
+      setDigipet(undefined);
+  
+      // act
+      const response = await supertest(app).get("/digipet/rehome");
+  
+      // assert
+      expect(response.body.message).toMatch(/rehome/i);
+      expect(rehomeDigipet).toHaveBeenCalledTimes(0);
+    });
+  });
+
+
+
+  describe("GET /digipet/rehome", () => {
+    test("if the user has a digipet, it calls the rehomeDigipet controller and responds with a message explaining that it can be rehomed", async () => {
+      // setup
+      if (jest.isMockFunction(rehomeDigipet) /* type guard */) {
+        rehomeDigipet.mockReset();
+      }
+      setDigipet(undefined);
+  
+      // act
+      const response = await supertest(app).get("/digipet/rehome");
+  
+      // assert
+      expect(response.body.message).toMatch(/rehome/i);
+      expect(rehomeDigipet).toHaveBeenCalledTimes(0);
+    });
+  
+    test("if it does not have digipet, it responds with a message about hatching one", async () => {
+      // setup
+      if (jest.isMockFunction(rehomeDigipet) /* type guard */) {
+        rehomeDigipet.mockReset();
+      }
+      setDigipet(undefined);
+  
+      // act
+      const response = await supertest(app).get("/digipet/rehome");
+  
+      // assert
+      expect(response.body.message).toMatch(/rehome/i);
+      expect(rehomeDigipet).toHaveBeenCalledTimes(0);
+    });
+  });
+
+
+
 
 
